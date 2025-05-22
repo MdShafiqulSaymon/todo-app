@@ -1,5 +1,5 @@
 
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 
@@ -11,5 +11,9 @@ export class UsersController {
   @Get('profile')
   getProfile(@Request() req) {
     return this.usersService.findById(req.user.userId);
+  }
+  @Get(':id')
+  getUserById(@Param('id') id: string) {
+    return this.usersService.findById(id);
   }
 }

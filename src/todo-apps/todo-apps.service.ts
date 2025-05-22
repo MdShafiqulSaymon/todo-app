@@ -31,6 +31,7 @@ export class TodoAppsService {
   }
 
   async findOne(id: string, userId: string): Promise<TodoApp> {
+    // console.log(id);
     const todoApp = await this.todoAppModel.findOne({
       _id: id,
       $or: [
@@ -38,7 +39,7 @@ export class TodoAppsService {
         { 'collaborators.userId': userId },
       ],
     }).exec();
-
+    //console.log(todoApp);
     if (!todoApp) {
       throw new NotFoundException(`TodoApp with ID "${id}" not found or you don't have access`);
     }

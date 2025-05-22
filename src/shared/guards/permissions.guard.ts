@@ -39,11 +39,11 @@ export class TodoAppPermissionsGuard implements CanActivate {
     }
     
     if (!todoAppId) {
-      console.log('No todoAppId found in the request', { 
-        params: request.params, 
-        body: request.body,
-        query: request.query
-      });
+      // console.log('No todoAppId found in the request', { 
+      //   params: request.params, 
+      //   body: request.body,
+      //   query: request.query
+      // });
       return true;
     }
 
