@@ -1,3 +1,7 @@
+
+# TodoCollaborate API Documentation
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -57,42 +61,181 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+## Base URL
+```
+http://localhost:3001
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Authentication
+All protected endpoints require a Bearer token in the Authorization header:
+```
+Authorization: Bearer {access_token}
+```
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## Authentication APIs
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Register User
+- **Method:** `POST`
+- **URL:** `/auth/register`
+- **Request:** Email, password, firstName, lastName
+- **Response:** JWT access token and user information
 
-## Support
+### Login User
+- **Method:** `POST`
+- **URL:** `/auth/login`
+- **Request:** Email and password
+- **Response:** JWT access token and user information
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Logout
+- **Method:** `POST`
+- **URL:** `/auth/logout`
+- **Headers:** Authorization Bearer token
+- **Response:** Success message
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## User APIs
 
-## License
+### Get User Profile
+- **Method:** `GET`
+- **URL:** `/users/profile`
+- **Headers:** Authorization Bearer token
+- **Response:** Current user's profile information
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## TodoApp APIs
+
+### Create TodoApp
+- **Method:** `POST`
+- **URL:** `/todo-apps`
+- **Headers:** Authorization Bearer token
+- **Request:** Name and description
+- **Response:** Created TodoApp object with ID, owner, and metadata
+
+### Get All TodoApps
+- **Method:** `GET`
+- **URL:** `/todo-apps`
+- **Headers:** Authorization Bearer token
+- **Response:** Array of all TodoApps user has access to
+
+### Get TodoApp by ID
+- **Method:** `GET`
+- **URL:** `/todo-apps?todoAppId={todoAppId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Specific TodoApp with collaborators
+
+### Update TodoApp
+- **Method:** `PATCH`
+- **URL:** `/todo-apps/{todoAppId}`
+- **Headers:** Authorization Bearer token
+- **Request:** Updated name and/or description
+- **Response:** Updated TodoApp object
+
+### Delete TodoApp
+- **Method:** `DELETE`
+- **URL:** `/todo-apps/{todoAppId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Deleted TodoApp object
+
+### Add Collaborator
+- **Method:** `POST`
+- **URL:** `/todo-apps/{todoAppId}/collaborators`
+- **Headers:** Authorization Bearer token
+- **Request:** Email and role (editor/viewer)
+- **Response:** Updated TodoApp with new collaborator
+
+### Remove Collaborator
+- **Method:** `DELETE`
+- **URL:** `/todo-apps/{todoAppId}/collaborators/{collaboratorId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Updated TodoApp without removed collaborator
+
+---
+
+## Task APIs
+
+### Create Task
+- **Method:** `POST`
+- **URL:** `/tasks`
+- **Headers:** Authorization Bearer token
+- **Request:** Title, description, todoAppId, status, dueDate, priority
+- **Response:** Created Task object with ID and metadata
+
+### Get All Tasks for TodoApp
+- **Method:** `GET`
+- **URL:** `/tasks?todoAppId={todoAppId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Array of all tasks in specified TodoApp
+
+### Get Task by ID
+- **Method:** `GET`
+- **URL:** `/tasks/{taskId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Specific Task object
+
+### Update Task
+- **Method:** `PATCH`
+- **URL:** `/tasks/{taskId}`
+- **Headers:** Authorization Bearer token
+- **Request:** Updated title, description, and/or priority
+- **Response:** Updated Task object
+
+### Update Task Status
+- **Method:** `PATCH`
+- **URL:** `/tasks/{taskId}/status`
+- **Headers:** Authorization Bearer token
+- **Request:** New status (stale/in-progress/completed)
+- **Response:** Updated Task with new status
+
+### Delete Task
+- **Method:** `DELETE`
+- **URL:** `/api/tasks/{taskId}`
+- **Headers:** Authorization Bearer token
+- **Response:** Deleted Task object
+
+---
+
+## Data Models
+
+### User
+- `id`: Unique identifier
+- `email`: User email address
+- `firstName`: User's first name
+- `lastName`: User's last name
+- `createdAt`: Account creation timestamp
+- `updatedAt`: Last update timestamp
+
+### TodoApp
+- `_id`: Unique identifier
+- `name`: TodoApp name
+- `description`: TodoApp description
+- `ownerId`: Owner's user ID
+- `collaborators`: Array of collaborator objects with userId and role
+- `createdAt`: Creation timestamp
+- `updatedAt`: Last update timestamp
+
+### Task
+- `_id`: Unique identifier
+- `title`: Task title
+- `description`: Task description
+- `status`: Task status (stale/in-progress/completed)
+- `todoAppId`: Parent TodoApp ID
+- `createdBy`: Creator's user ID
+- `dueDate`: Task due date
+- `priority`: Task priority (low/medium/high)
+- `createdAt`: Creation timestamp
+- `updatedAt`: Last update timestamp
+
+---
+
+## Status Codes
+- `200`: Success
+- `201`: Created
+- `400`: Bad Request
+- `401`: Unauthorized
+- `403`: Forbidden
+- `404`: Not Found
+- `500`: Internal Server Error
