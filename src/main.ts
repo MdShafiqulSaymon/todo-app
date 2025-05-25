@@ -4,10 +4,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Enable CORS for all origins
+
+  // Enable CORS for all origins (or specify your domains)
   app.enableCors({
-    origin: true, // Allows all origins
+    origin: [
+      'http://localhost:3000', 
+      'https://todo-app-frontend-eight-ashy.vercel.app', 
+      /^https:\/\/.*\.vercel\.app$/, 
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
@@ -20,7 +24,9 @@ async function bootstrap() {
     transform: true,
   }));
 
-  await app.listen(3000);
-  console.log('Application is running on: http://localhost:3000');
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
+
 bootstrap();
