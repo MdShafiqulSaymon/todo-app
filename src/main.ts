@@ -8,7 +8,7 @@ async function bootstrap() {
   // Enable CORS for all origins (or specify your domains)
   app.enableCors({
     origin: [
-      'http://localhost:3000', 
+      'http://localhost:3001', 
       'https://todo-app-frontend-eight-ashy.vercel.app', 
       /^https:\/\/.*\.vercel\.app$/, 
     ],
